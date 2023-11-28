@@ -1,4 +1,5 @@
 const Training = require('../models/Training')
+const ErrorResponse = require('../utils/errorResponse')
 // @desc   Get all trainings
 // @route  GET /api/trainings
 // @access Public
@@ -25,7 +26,7 @@ exports.getTraining = async (req, res, next) => {
     }
     return res.status(200).json({ success: true, data: training })
   } catch (error) {
-    next(error)
+    next(new ErrorResponse(`The id ${req.params.id} is not valid`, 404))
   }
 }
 // @desc   Create new training
