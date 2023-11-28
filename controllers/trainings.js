@@ -12,7 +12,7 @@ exports.getTrainings = async (req, res, next) => {
       data: trainings,
     })
   } catch (error) {
-    res.status(400).json({ success: false })
+    next(error)
   }
 }
 // @desc   Get single training
@@ -53,7 +53,7 @@ exports.updateTraining = async (req, res, next) => {
       return res.status(400).json({ success: false, msg: 'Not found!' })
     res.status(200).json({ success: true, data: training })
   } catch (error) {
-    next(error)
+    next(new ErrorResponse(`The id ${req.params.id} is not valid`, 404))
   }
 }
 // @desc   Delete training
@@ -66,6 +66,6 @@ exports.deleteTraining = async (req, res, next) => {
       return res.status(400).json({ succes: false, msg: 'Not found!' })
     res.status(200).json({ success: true, data: training })
   } catch (error) {
-    next(error)
+    next(new ErrorResponse(`The id ${req.params.id} is not valid`, 404))
   }
 }
