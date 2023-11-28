@@ -3,12 +3,10 @@ require('dotenv').config()
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const trainings = require('./routes/trainings')
+const errorHandler = require('./middleware/error.js')
 
 const app = express()
 app.use(express.json())
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`),
-)
 
 mongoose.set('strictQuery', true)
 const mongoString = process.env.DATABASE_URL
@@ -26,3 +24,8 @@ database.once('connected', () => {
 app.use(morgan('dev'))
 
 app.use('/api/trainings', trainings)
+app.use(errorHandler)
+
+app.listen(process.env.PORT, () =>
+  console.log(`Server running on port ${process.env.PORT}`),
+)

@@ -25,8 +25,7 @@ exports.getTraining = async (req, res, next) => {
     }
     return res.status(200).json({ success: true, data: training })
   } catch (error) {
-    res.status(400).json({ success: false })
-    console.log(error)
+    next(error)
   }
 }
 // @desc   Create new training
@@ -37,7 +36,7 @@ exports.createTraining = async (req, res, next) => {
     const training = await Training.create(req.body)
     res.status(201).json({ success: true, data: training })
   } catch (error) {
-    res.status(400).json({ success: false })
+    next(error)
   }
 }
 // @desc   Update training
@@ -53,7 +52,7 @@ exports.updateTraining = async (req, res, next) => {
       return res.status(400).json({ success: false, msg: 'Not found!' })
     res.status(200).json({ success: true, data: training })
   } catch (error) {
-    res.status(400).json({ success: false })
+    next(error)
   }
 }
 // @desc   Delete training
@@ -66,6 +65,6 @@ exports.deleteTraining = async (req, res, next) => {
       return res.status(400).json({ succes: false, msg: 'Not found!' })
     res.status(200).json({ success: true, data: training })
   } catch (error) {
-    res.status(400).json({ succes: false })
+    next(error)
   }
 }
