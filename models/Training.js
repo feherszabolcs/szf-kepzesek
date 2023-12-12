@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const geocoder = require('../utils/geocoder')
+
 const TrainingSchema = new mongoose.Schema({
   name: {
     type: String,

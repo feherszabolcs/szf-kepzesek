@@ -5,7 +5,15 @@ const ErrorResponse = require('../utils/errorResponse')
 // @access Public
 exports.getTrainings = async (req, res, next) => {
   try {
-    const trainings = await Training.find()
+    let query
+    let queryStr = JSON.stringify(req.query)
+    queryStr = queryStr.replace(
+      /\b(gt|gte|lt|lte|in)\b/g,
+      (match) => `$${match}`,
+    )
+
+    query = Training.find(JSON.parse(queryStr))
+    const trainings = await query
     res.status(200).json({
       success: true,
       count: trainings.length,
