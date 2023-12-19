@@ -5,6 +5,11 @@ const ErrorResponse = require('../utils/errorResponse')
 // @access Public
 exports.getTrainings = async (req, res, next) => {
   try {
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 4
+    const skip = (page - 1) * limit
+    const endIndex = page * limit - 1
+
     let query
     let queryStr = JSON.stringify(req.query)
     queryStr = queryStr.replace(
@@ -13,6 +18,22 @@ exports.getTrainings = async (req, res, next) => {
     )
 
     query = Training.find(JSON.parse(queryStr))
+    query = query.skip(skip).limit(limit)
+
+    const pagination = {}
+    if (skip > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit,
+      }
+    }
+    if (endIndex > total) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit,
+      }
+    }
+
     const trainings = await query
     res.status(200).json({
       success: true,
