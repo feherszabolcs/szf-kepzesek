@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const trainings = require('./routes/trainings')
 const errorHandler = require('./middleware/error.js')
 const courses = require('./routes/courses')
+const fileUpload = require('express-fileupload')
 
 const app = express()
 app.use(express.json())
@@ -23,6 +24,9 @@ database.once('connected', () => {
 })
 
 app.use(morgan('dev'))
+
+app.use(fileUpload())
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api/trainings', trainings)
 app.use('/api/courses', courses)

@@ -27,12 +27,12 @@ exports.getTrainings = async (req, res, next) => {
         limit: limit,
       }
     }
-    if (endIndex > total) {
-      pagination.next = {
-        page: page + 1,
-        limit: limit,
-      }
-    }
+    // if (endIndex > total) {
+    //   pagination.next = {
+    //     page: page + 1,
+    //     limit: limit,
+    //   }
+    // }
 
     const trainings = await query
     res.status(200).json({
@@ -94,9 +94,19 @@ exports.deleteTraining = async (req, res, next) => {
     const training = await Training.findById(req.params.id)
     if (!training)
       return res.status(400).json({ succes: false, msg: 'Not found!' })
+    console.log(training.id)
     training.remove()
-    res.status(200).json({ success: true, data: training })
+    res.status(200).json({ success: true, data: {} })
   } catch (error) {
     next(new ErrorResponse(`The id ${req.params.id} is not valid`, 404))
   }
+}
+
+exports.trainingPhotoUpload = async (req, res, next) => {
+  try {
+    const training = await Training.findById(req.params.id)
+    if (!training) return res.status(404).json({ succes: false })
+    if (!req.files)
+      return res.status(400).json({ success: false, msg: 'No file uploaded' })
+  } catch (err) {}
 }

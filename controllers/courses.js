@@ -12,7 +12,7 @@ exports.getCourses = async (req, res, next) => {
     } else {
       query = Course.find().populate({
         path: 'training',
-        select: '-id name description',
+        select: 'name description',
       })
     }
     const courses = await query

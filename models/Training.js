@@ -111,7 +111,7 @@ TrainingSchema.pre('save', async (next) => {
   next()
 })
 
-TrainingSchema.pre('remove', async (next) => {
+TrainingSchema.pre('remove', async function (next) {
   console.log(`Courses being removed from bootcamp ${this._id}`)
   await this.model('Course').deleteMany({ training: this._id })
   next()
