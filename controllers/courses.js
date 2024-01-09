@@ -109,25 +109,3 @@ exports.updateCourse = async (req, res, next) => {
     next(error)
   }
 }
-
-// @desc   Add course
-// @route  POST /api/trainings/:trainingId/courses
-// @access Private
-exports.addCourse = async (req, res, next) => {
-  try {
-    req.body.training = req.params.trainingId
-    const training = await Training.findById(req.params.trainingId)
-    if (!training) {
-      return next(
-        new ErrorResponse(
-          `No training with the id of ${req.params.trainingId}`,
-          404,
-        ),
-      )
-    }
-    const course = await Course.create(req.body)
-    res.status(200).json({ success: true, data: course })
-  } catch (error) {
-    next(error)
-  }
-}
