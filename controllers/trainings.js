@@ -44,6 +44,7 @@ exports.getTrainings = async (req, res, next) => {
     next(error)
   }
 }
+
 // @desc   Get single training
 // @route  GET /api/trainings/:id
 // @access Public
@@ -90,9 +91,10 @@ exports.updateTraining = async (req, res, next) => {
 // @access Private
 exports.deleteTraining = async (req, res, next) => {
   try {
-    const training = await Training.findByIdAndDelete(req.params.id)
+    const training = await Training.findById(req.params.id)
     if (!training)
       return res.status(400).json({ succes: false, msg: 'Not found!' })
+    training.remove()
     res.status(200).json({ success: true, data: training })
   } catch (error) {
     next(new ErrorResponse(`The id ${req.params.id} is not valid`, 404))

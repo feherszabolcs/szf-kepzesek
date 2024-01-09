@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const trainings = require('./routes/trainings')
 const errorHandler = require('./middleware/error.js')
+const courses = require('./routes/courses')
 
 const app = express()
 app.use(express.json())
@@ -24,6 +25,8 @@ database.once('connected', () => {
 app.use(morgan('dev'))
 
 app.use('/api/trainings', trainings)
+app.use('/api/courses', courses)
+
 app.use(errorHandler)
 
 app.listen(process.env.PORT, () =>
