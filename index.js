@@ -6,6 +6,7 @@ const trainings = require('./routes/trainings')
 const errorHandler = require('./middleware/error.js')
 const courses = require('./routes/courses')
 const fileUpload = require('express-fileupload')
+const path = require('path')
 
 const app = express()
 app.use(express.json())

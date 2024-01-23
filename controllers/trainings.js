@@ -1,5 +1,7 @@
 const Training = require('../models/Training')
 const ErrorResponse = require('../utils/errorResponse')
+const path = require('path')
+
 // @desc   Get all trainings
 // @route  GET /api/trainings
 // @access Public
@@ -17,7 +19,7 @@ exports.getTrainings = async (req, res, next) => {
       (match) => `$${match}`,
     )
 
-    query = Training.find(JSON.parse(queryStr))
+    query = Training.find(JSON.parse(queryStr)).populate('courses')
     query = query.skip(skip).limit(limit)
 
     const pagination = {}
@@ -101,12 +103,51 @@ exports.deleteTraining = async (req, res, next) => {
     next(new ErrorResponse(`The id ${req.params.id} is not valid`, 404))
   }
 }
-
 exports.trainingPhotoUpload = async (req, res, next) => {
   try {
+    console.log(req.params.id)
     const training = await Training.findById(req.params.id)
-    if (!training) return res.status(404).json({ succes: false })
-    if (!req.files)
-      return res.status(400).json({ success: false, msg: 'No file uploaded' })
-  } catch (err) {}
+    if (!training) {
+      return res.status(400).json({ success: false, msg: 'Not found' })
+    }
+    if (!req.files) {
+      return res
+        .status(400)
+        .json({ success: false, msg: 'Please upload a file' })
+    }
+    const file = req.files.file
+    if (!file.mimetype.startsWith('image')) {
+      return res
+        .status(400)
+        .json({ success: false, msg: 'Please upload an image file' })
+    }
+
+    if (file.size > process.env.MAX_FILE_UPLOAD) {
+      return res.status(400).json({
+        success: false,
+        msg: `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+      })
+    }
+
+    file.name = `photo_${training.id}${path.parse(file.name).ext}`
+    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+      if (err) {
+        console.error(err)
+        return res
+          .status(500)
+          .json({ success: false, msg: `Problem with file upload` })
+      }
+    })
+    await Training.findByIdAndUpdate(req.params.id, { photo: file.name })
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    })
+
+    console.log(file.name)
+
+    console.log(req.files)
+  } catch (error) {
+    res.status(400).json({ success: false })
+  }
 }
